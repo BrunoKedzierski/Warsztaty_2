@@ -156,7 +156,7 @@ public class Solution {
 
 
 
-    static public ArrayList<Solution> loadAllGroups() {
+    static public ArrayList<Solution> loadAllSolutions() {
         ArrayList<Solution> solutions = new ArrayList<>();
         String query = "SELECT * FROM solution";
 
@@ -178,5 +178,67 @@ public class Solution {
         }
         return solutions;
     }
+
+    static public ArrayList<Solution> loadAllByUserId(int id) {
+        ArrayList<Solution> solutions = new ArrayList<>();
+
+        String query = "SELECT * FROM solution WHERE user_id=?";
+        ArrayList<String> params = new ArrayList<>();
+        params.add(String.valueOf(id));
+
+
+        try {
+            List<String[]> rows = DbService.getData(query,params);
+            if (!(rows.size() > 0)) throw new InputMismatchException();
+            for (String[] row : rows) {
+                Solution solution = new Solution();
+                solution.id = Integer.parseInt(row[0]);
+                solution.created = row[1];
+                solution.updated = row[2];
+                solution.description = row[3];
+                solution.user_id = Integer.parseInt(row[4]);
+                solution.exercise_id = Integer.parseInt(row[5]);
+                solutions.add(solution);
+            }
+        }catch (InputMismatchException c){
+            System.out.println("The user does not exist");
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return solutions;
+    }
+
+    static public ArrayList<Solution> loadAllByExerciseId(int id) {
+        ArrayList<Solution> solutions = new ArrayList<>();
+
+        String query = "SELECT * FROM solution WHERE excercise_id=? ORDER BY created ASC";
+        ArrayList<String> params = new ArrayList<>();
+        params.add(String.valueOf(id));
+
+
+        try {
+            List<String[]> rows = DbService.getData(query,params);
+            if (!(rows.size() > 0)) throw new InputMismatchException();
+            for (String[] row : rows) {
+                Solution solution = new Solution();
+                solution.id = Integer.parseInt(row[0]);
+                solution.created = row[1];
+                solution.updated = row[2];
+                solution.description = row[3];
+                solution.user_id = Integer.parseInt(row[4]);
+                solution.exercise_id = Integer.parseInt(row[5]);
+                solutions.add(solution);
+            }
+        }catch (InputMismatchException c){
+            System.out.println("This exercise does not exist");
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return solutions;
+    }
+
+
 
 }

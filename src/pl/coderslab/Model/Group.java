@@ -95,15 +95,15 @@ public class Group {
 
         try {
             List<String[]> rows = DbService.getData(query, params);
-            if (!(rows.size() > 0)) throw new InputMismatchException();
-            for (String[] row : rows) {
+            if (!(rows.size() > 0)) {
                 Group group = new Group();
-                group.id = Integer.parseInt(row[0]);
-                group.name = row[1];
+                group.id = -1;
+                group.name = "";
+
+
                 return group;
+
             }
-        } catch (InputMismatchException c){
-            System.out.println("Id: " + id  + " does not exist");
         }
         catch (SQLException e) {
             e.printStackTrace();

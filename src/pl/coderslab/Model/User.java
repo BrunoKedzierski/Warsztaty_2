@@ -154,7 +154,18 @@ public class User {
 
         try {
             List<String[]> rows = DbService.getData(query, params);
-            if (!(rows.size() > 0)) throw new InputMismatchException();
+            if (!(rows.size() > 0)) {
+                User user = new User();
+                user.id = -1;
+                user.email = "";
+                user.username = "";
+                user.password = "";
+                user.person_group_id = -1;
+
+
+                return user;
+
+            }
             for (String[] row : rows) {
                 User user = new User();
                 user.id = Integer.parseInt(row[0]);
@@ -166,9 +177,7 @@ public class User {
 
                 return user;
             }
-        }  catch (InputMismatchException e) {
-            System.out.println("Id: " + id + " does not exist");
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -232,5 +241,32 @@ public class User {
         return users;
     }
 
+    static public ArrayList<User> loadAllUsersByGroupId(int id) {
+        ArrayList<User> users = new ArrayList<>();
+        String query = "SELECT * FROM users WHERE person_group_id = ?";
+        ArrayList<String> params = new ArrayList<>();
+        params.add(String.valueOf(id));
+
+
+        try {
+            List<String[]> rows = DbService.getData(query, params);
+            if (!(rows.size() > 0)) throw new InputMismatchException();
+            for (String[] row : rows) {
+                User user = new User();
+                user.id = Integer.parseInt(row[0]);
+                user.email = row[1];
+                user.username = row[2];
+                user.password = row[3];
+                user.person_group_id = Integer.parseInt(row[4]);
+                users.add(user);
+            }
+        } catch (InputMismatchException e){
+            System.out.println("This group does not exist");
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
 
 }

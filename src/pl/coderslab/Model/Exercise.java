@@ -99,7 +99,7 @@ public class Exercise {
             this.id = 0;
 
         } else {
-            System.out.println("The id: " + this.id + " does not exist");
+            System.out.println("The exercise does not exist");
         }
     }
     //Static methods

@@ -82,7 +82,7 @@ public class Group {
                 e.printStackTrace();
             }
         } else {
-            System.out.println("Taka grupa nie istnieje!");
+            System.out.println("The group does not exist");
         }
 
     }

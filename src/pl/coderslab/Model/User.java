@@ -65,6 +65,11 @@ public class User {
     public int getPerson_group_id() {
         return person_group_id;
     }
+
+    public int getId() {
+        return id;
+    }
+
     //------------------
     //Non-static methods
     public void saveToDb() {
@@ -113,7 +118,7 @@ public class User {
             } catch (SQLIntegrityConstraintViolationException c) {
                 System.out.println("Email address is already used or the group does not exist");
 
-            }catch (SQLException e) {
+            } catch (SQLException e) {
 
                 e.printStackTrace();
 
@@ -134,8 +139,7 @@ public class User {
             }
             this.id = 0;
 
-        }
-        else {
+        } else {
             System.out.println("The id: " + this.id + " does not exist");
         }
     }
@@ -150,7 +154,7 @@ public class User {
 
         try {
             List<String[]> rows = DbService.getData(query, params);
-            if(!(rows.size() > 0))throw new InputMismatchException();
+            if (!(rows.size() > 0)) throw new InputMismatchException();
             for (String[] row : rows) {
                 User user = new User();
                 user.id = Integer.parseInt(row[0]);
@@ -162,23 +166,25 @@ public class User {
 
                 return user;
             }
-        } catch (SQLException e) {
+        }  catch (InputMismatchException e) {
+            System.out.println("Id: " + id + " does not exist");
+        }catch (SQLException e) {
             e.printStackTrace();
         }
-        catch (InputMismatchException e){
-            System.out.println("Podany użytkownik nie istnieje !");
-        }
+
         return null;
     }
 
 
-    public static User getUserByMail(String email){
+    public static User getUserByMail(String email) {
         String query = "SELECT * FROM users WHERE email =?";
         ArrayList<String> params = new ArrayList<>();
         params.add(email);
 
         try {
             List<String[]> rows = DbService.getData(query, params);
+            if (!(rows.size() > 0)) throw new InputMismatchException();
+
             for (String[] row : rows) {
                 User user = new User();
                 user.id = Integer.parseInt(row[0]);
@@ -190,16 +196,18 @@ public class User {
 
                 return user;
             }
-        } catch (SQLException e) {
+        } catch (InputMismatchException c){
+            System.out.println("email: " + email + " does not exist");
+
+
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
 
 
-
-
     }
-
 
 
     static public ArrayList<User> loadAllUsers() {

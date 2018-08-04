@@ -7,6 +7,7 @@ import javax.print.DocFlavor;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 
 public class User {
@@ -83,7 +84,7 @@ public class User {
 
                 }
             } catch (SQLIntegrityConstraintViolationException c) {
-                System.out.println("Podana grupa nie istnieje");
+                System.out.println("Email address is already used or the group does not exist");
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -109,7 +110,10 @@ public class User {
                 DbService.executeQuery(query, params);
 
 
-            } catch (SQLException e) {
+            } catch (SQLIntegrityConstraintViolationException c) {
+                System.out.println("Email address is already used or the group does not exist");
+
+            }catch (SQLException e) {
 
                 e.printStackTrace();
 
@@ -131,6 +135,9 @@ public class User {
             this.id = 0;
 
         }
+        else {
+            System.out.println("The id: " + this.id + " does not exist");
+        }
     }
     //----------------------
     //Static methods
@@ -140,6 +147,35 @@ public class User {
         String query = "SELECT * FROM users WHERE id =?";
         ArrayList<String> params = new ArrayList<>();
         params.add(String.valueOf(id));
+
+        try {
+            List<String[]> rows = DbService.getData(query, params);
+            if(!(rows.size() > 0))throw new InputMismatchException();
+            for (String[] row : rows) {
+                User user = new User();
+                user.id = Integer.parseInt(row[0]);
+                user.email = row[1];
+                user.username = row[2];
+                user.password = row[3];
+                user.person_group_id = Integer.parseInt(row[4]);
+
+
+                return user;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        catch (InputMismatchException e){
+            System.out.println("Podany użytkownik nie istnieje !");
+        }
+        return null;
+    }
+
+
+    public static User getUserByMail(String email){
+        String query = "SELECT * FROM users WHERE email =?";
+        ArrayList<String> params = new ArrayList<>();
+        params.add(email);
 
         try {
             List<String[]> rows = DbService.getData(query, params);
@@ -158,7 +194,12 @@ public class User {
             e.printStackTrace();
         }
         return null;
+
+
+
+
     }
+
 
 
     static public ArrayList<User> loadAllUsers() {

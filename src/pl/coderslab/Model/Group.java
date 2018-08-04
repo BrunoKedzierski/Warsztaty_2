@@ -3,7 +3,9 @@ package pl.coderslab.Model;
 import service.DbService;
 
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Group {
     private int id;
@@ -39,7 +41,10 @@ public class Group {
                 if (id != null) {
                     this.id = id;
                 }
-            } catch (SQLException e) {
+            }catch (SQLIntegrityConstraintViolationException c) {
+                System.out.println("Group name is already taken");
+            }
+            catch (SQLException e) {
                 e.printStackTrace();
             }
         }
@@ -50,7 +55,10 @@ public class Group {
             params.add(String.valueOf(this.id));
             try {
                 DbService.executeQuery(query,params);
-            } catch (SQLException e) {
+            }catch (SQLIntegrityConstraintViolationException c) {
+                System.out.println("Group name is already taken");
+            }
+            catch (SQLException e) {
                 e.printStackTrace();
             }
 
@@ -75,4 +83,26 @@ public class Group {
 
     }
     //Static methods
+    public static Group getGroupById (int id){
+        String query = "SELECT * FROM user_group WHERE id =?";
+        ArrayList<String> params = new ArrayList<>();
+        params.add(String.valueOf(id));
+
+        try {
+            List<String[]> rows = DbService.getData(query, params);
+            for (String[] row : rows) {
+                Group group = new Group();
+                group.id = Integer.parseInt(row[0]);
+                group.name = row[1];
+                return group;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+
+
+    }
+
 }

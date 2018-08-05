@@ -57,8 +57,13 @@ public class UserManagment {
                         System.out.println("Type a valid id");
                         scan.next();
                     }
-
                     int group = scan.nextInt();
+                    while (Group.getGroupById(group).getId() == -1){
+                        System.out.println("This id does not exist. Try again!");
+                        group = scan.nextInt();
+
+                    }
+
                     User user = new User(username, password, email, group);
                     user.saveToDb();
                     showAllUsers();
@@ -71,7 +76,7 @@ public class UserManagment {
                         scan.next();
                     }
                     int id = scan.nextInt();
-                    while (Group.getGroupById(id).getId() == -1){
+                    while (User.getUserById(id).getId() == -1){
                         System.out.println("This id does not exist. Try again!");
                         id = scan.nextInt();
 
@@ -88,8 +93,14 @@ public class UserManagment {
                         System.out.println("Type a valid id");
                         scan.next();
                     }
-
                     int group = scan.nextInt();
+                    while (Group.getGroupById(group).getId() == -1){
+                        System.out.println("This id does not exist. Try again!");
+                        group = scan.nextInt();
+
+                    }
+
+
 
                     User user = User.getUserById(id);
                     user.setUsername(username);

@@ -53,7 +53,11 @@ public class Group {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        } else {
+        } if (this.id == -1){
+            System.out.println("Error, this group is a product of an unsucessfull get method. Please search for another group");
+        }
+
+        else {
             String query = "UPDATE user_group SET name =? WHERE id =?";
             ArrayList<String> params = new ArrayList<>();
             params.add(this.name);
@@ -71,7 +75,7 @@ public class Group {
     }
 
     public void delete() {
-        if (this.id != 0) {
+        if (this.id > 0) {
             String query = "DELETE FROM user_group WHERE id = ?";
             ArrayList<String> params = new ArrayList<>();
             params.add(String.valueOf(this.id));
@@ -104,6 +108,12 @@ public class Group {
                 return group;
 
             }
+            for (String[] row : rows) {
+                Group group = new Group();
+                group.id = Integer.parseInt(row[0]);
+                group.name = row[1];
+                return group;
+            }
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -118,15 +128,20 @@ public class Group {
 
         try {
             List<String[]> rows = DbService.getData(query, params);
-            if (!(rows.size() > 0)) throw new InputMismatchException();
+            if (!(rows.size() > 0)){
+                Group group = new Group();
+                group.id = -1;
+                group.name = "";
+                System.out.println("The group does not exist");
+                return group;
+
+            }
             for (String[] row : rows) {
                 Group group = new Group();
                 group.id = Integer.parseInt(row[0]);
                 group.name = row[1];
                 return group;
             }
-        }catch (InputMismatchException c){
-            System.out.println("The group: " + name + " does not exist" );
         }
         catch (SQLException e) {
             e.printStackTrace();

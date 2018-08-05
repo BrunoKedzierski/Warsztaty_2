@@ -90,7 +90,11 @@ public class Solution {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        } else {
+        }if (this.id == -1){
+            System.out.println("Error, this solution is a product of an unsucessfull get method. Please search for another solution");
+        }
+
+        else {
             String query = "UPDATE solution SET updated = NOW(), description = ?, users_id = ? , excercise_id = ? WHERE id =?";
             ArrayList<String> params = new ArrayList<>();
             params.add(this.description);
@@ -109,7 +113,7 @@ public class Solution {
     }
 
     public void delete() {
-        if (this.id != 0) {
+        if (this.id > 0) {
             String query = "DELETE FROM solution WHERE id = ?";
             ArrayList<String> params = new ArrayList<>();
             params.add(String.valueOf(this.id));
@@ -133,7 +137,17 @@ public class Solution {
 
         try {
             List<String[]> rows = DbService.getData(query, params);
-            if (!(rows.size() > 0)) throw new InputMismatchException();
+            if (!(rows.size() > 0)) {
+                Solution solution = new Solution();
+                solution.id = -1;
+                solution.created = null;
+                solution.updated = null;
+                solution.description = "";
+                solution.user_id = -1;
+                solution.exercise_id = -1;
+                return solution;
+
+            }
             for (String[] row : rows) {
                 Solution solution = new Solution();
                 solution.id = Integer.parseInt(row[0]);
@@ -144,8 +158,6 @@ public class Solution {
                 solution.exercise_id = Integer.parseInt(row[5]);
                 return solution;
             }
-        } catch (InputMismatchException c){
-            System.out.println("Id: " + id  + " does not exist");
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -189,7 +201,17 @@ public class Solution {
 
         try {
             List<String[]> rows = DbService.getData(query,params);
-            if (!(rows.size() > 0)) throw new InputMismatchException();
+            if (!(rows.size() > 0)) {
+                Solution solution = new Solution();
+                solution.id = -1;
+                solution.created = null;
+                solution.updated = null;
+                solution.description = null;
+                solution.user_id = -1;
+                solution.exercise_id = -1;
+                solutions.add(solution);
+
+            }
             for (String[] row : rows) {
                 Solution solution = new Solution();
                 solution.id = Integer.parseInt(row[0]);
@@ -200,8 +222,6 @@ public class Solution {
                 solution.exercise_id = Integer.parseInt(row[5]);
                 solutions.add(solution);
             }
-        }catch (InputMismatchException c){
-            System.out.println("The user does not exist");
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -219,7 +239,17 @@ public class Solution {
 
         try {
             List<String[]> rows = DbService.getData(query,params);
-            if (!(rows.size() > 0)) throw new InputMismatchException();
+            if (!(rows.size() > 0)) {
+                Solution solution = new Solution();
+                solution.id = -1;
+                solution.created = null;
+                solution.updated = null;
+                solution.description = "";
+                solution.user_id = -1;
+                solution.exercise_id = -1;
+                solutions.add(solution);
+
+            }
             for (String[] row : rows) {
                 Solution solution = new Solution();
                 solution.id = Integer.parseInt(row[0]);
@@ -230,8 +260,6 @@ public class Solution {
                 solution.exercise_id = Integer.parseInt(row[5]);
                 solutions.add(solution);
             }
-        }catch (InputMismatchException c){
-            System.out.println("This exercise does not exist");
         }
         catch (SQLException e) {
             e.printStackTrace();

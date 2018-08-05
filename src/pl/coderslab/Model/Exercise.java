@@ -65,8 +65,11 @@ public class Exercise {
                 e.printStackTrace();
             }
 
-        } else {
-            String query = "UPDATE users SET  title = ?, description = ?  WHERE id = ?";
+        }if (this.id == -1){
+            System.out.println("Error, this exercise is a product of an unsucessfull get method. Please search for another exercise");
+        }
+        else {
+            String query = "UPDATE exercise SET  title = ?, description = ?  WHERE id = ?";
 
             List<String> params = new ArrayList<>();
 
@@ -87,7 +90,7 @@ public class Exercise {
 
         }
     }public void delete() {
-        if (this.id != 0) {
+        if (this.id > 0) {
             String query = "DELETE FROM exercise WHERE id = ?";
             ArrayList<String> params = new ArrayList<>();
             params.add(String.valueOf(this.id));
@@ -110,16 +113,21 @@ public class Exercise {
 
         try {
             List<String[]> rows = DbService.getData(query, params);
-            if (!(rows.size() > 0)) throw new InputMismatchException();
+            if (!(rows.size() > 0)) {
+                Exercise exercise = new Exercise();
+                exercise.id = -1;
+                exercise.title = "";
+                exercise.description = "";
+                return exercise;
+
+            }
             for (String[] row : rows) {
                 Exercise exercise = new Exercise();
                 exercise.id = Integer.parseInt(row[0]);
                 exercise.title = row[1];
-                exercise.description = row[3];
+                exercise.description = row[2];
                 return exercise;
             }
-        } catch (InputMismatchException c){
-            System.out.println("Id: " + id  + " does not exist");
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -134,7 +142,14 @@ public class Exercise {
 
         try {
             List<String[]> rows = DbService.getData(query, params);
-            if (!(rows.size() > 0)) throw new InputMismatchException();
+            if (!(rows.size() > 0)) {
+                Exercise exercise = new Exercise();
+                exercise.id = -1;
+                exercise.title = "";
+                exercise.description = "";
+                return exercise;
+
+            }
             for (String[] row : rows) {
                 Exercise exercise = new Exercise();
                 exercise.id = Integer.parseInt(row[0]);
@@ -142,8 +157,6 @@ public class Exercise {
                 exercise.description = row[2];
                 return exercise;
             }
-        }catch (InputMismatchException c){
-            System.out.println("The exercise: " + title + " does not exist" );
         }
         catch (SQLException e) {
             e.printStackTrace();

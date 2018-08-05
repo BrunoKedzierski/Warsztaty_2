@@ -94,7 +94,12 @@ public class User {
                 e.printStackTrace();
             }
 
-        } else {
+        }if (this.id == -1){
+            System.out.println("Error, this user is a product of an unsucessfull get method. Please search for another user");
+        }
+
+
+        else {
             String query = "UPDATE users SET  username = ?, password = ?, email = ?, person_group_id = ? WHERE id = ?";
 
             List<String> params = new ArrayList<>();
@@ -128,7 +133,7 @@ public class User {
     }
 
     public void delete() {
-        if (this.id != 0) {
+        if (this.id > 0) {
             String query = "DELETE FROM users WHERE id = ?";
             ArrayList<String> params = new ArrayList<>();
             params.add(String.valueOf(this.id));
@@ -161,8 +166,6 @@ public class User {
                 user.username = "";
                 user.password = "";
                 user.person_group_id = -1;
-
-
                 return user;
 
             }
@@ -192,7 +195,19 @@ public class User {
 
         try {
             List<String[]> rows = DbService.getData(query, params);
-            if (!(rows.size() > 0)) throw new InputMismatchException();
+            if (!(rows.size() > 0)){
+                User user = new User();
+                user.id = -1;
+                user.email = "";
+                user.username = "";
+                user.password = "";
+                user.person_group_id = -1;
+                System.out.println(" email does not exist");
+
+
+                return user;
+
+            }
 
             for (String[] row : rows) {
                 User user = new User();
@@ -205,10 +220,6 @@ public class User {
 
                 return user;
             }
-        } catch (InputMismatchException c){
-            System.out.println("email: " + email + " does not exist");
-
-
         }
         catch (SQLException e) {
             e.printStackTrace();
@@ -250,7 +261,18 @@ public class User {
 
         try {
             List<String[]> rows = DbService.getData(query, params);
-            if (!(rows.size() > 0)) throw new InputMismatchException();
+            if (!(rows.size() > 0)){
+                User user = new User();
+                user.id = -1;
+                user.email = "";
+                user.username = "";
+                user.password = "";
+                user.person_group_id = -1;
+                System.out.println("The group has no users");
+                users.add(user);
+
+
+            }
             for (String[] row : rows) {
                 User user = new User();
                 user.id = Integer.parseInt(row[0]);
@@ -260,8 +282,6 @@ public class User {
                 user.person_group_id = Integer.parseInt(row[4]);
                 users.add(user);
             }
-        } catch (InputMismatchException e){
-            System.out.println("This group does not exist");
         }
         catch (SQLException e) {
             e.printStackTrace();
